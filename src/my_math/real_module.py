@@ -8,44 +8,51 @@ class RealModule:
         self.m = m  # степень многочлена
         self.C = C  # коэффициенты (объекты RationalModule)
 
-    def ADD_PP_P(self, other):
-        """
-        Сложение многочленов
-        Боков 4384
+        def ADD_PP_P(self, other):
+            """
+            Сложение многочленов
+            Боков 4384
 
-        Алгоритм:
-        1. Определить максимальную степень среди двух многочленов
-        2. Для каждой степени от 0 до максимальной:
-           - Взять коэффициенты при одинаковых степенях из обоих многочленов
-           - Если коэффициент отсутствует, считать его равным нулю
-           - Сложить коэффициенты 
-        3. Вернуть новый многочлен с полученными коэффициентами
-        """
-        max_degree = max(self.DEG_P_N(), other.DEG_P_N())
-        new_C = []
+            Алгоритм:
+            1. Определить максимальную степень среди двух многочленов
+            2. Для каждой степени от 0 до максимальной:
+            - Взять коэффициенты при одинаковых степенях из обоих многочленов
+            - Если коэффициент отсутствует, считать его равным нулю
+            - Сложить коэффициенты 
+            3. Вернуть новый многочлен с полученными коэффициентами
+            """
+            # Определяем максимальную степень из двух многочленов
+            max_degree = max(self.DEG_P_N(), other.DEG_P_N())
+            # Создаем пустой список для новых коэффициентов
+            new_C = []
 
-        for i in range(max_degree + 1):
-            # Получаем коэффициенты или нулевые если вышли за границы
-            coef1 = self.C[i] if i < len(self.C) else RationalModule(
-                IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
-            coef2 = other.C[i] if i < len(other.C) else RationalModule(
-                IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
+            # Проходим по всем степеням от 0 до максимальной
+            for i in range(max_degree + 1):
+                # Получаем коэффициент первого многочлена для степени i, если он существует, иначе создаем нулевой коэффициент
+                coef1 = self.C[i] if i < len(self.C) else RationalModule(
+                    IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
+                # Получаем коэффициент второго многочлена для степени i, если он существует, иначе создаем нулевой коэффициент
+                coef2 = other.C[i] if i < len(other.C) else RationalModule(
+                    IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
 
-            # Создаем копии коэффициентов
-            coef1_copy = RationalModule(
-                IntegerModule(coef1.up.b, coef1.up.n, coef1.up.A.copy()),
-                NaturalModule(coef1.down.n, coef1.down.A.copy())
-            )
-            coef2_copy = RationalModule(
-                IntegerModule(coef2.up.b, coef2.up.n, coef2.up.A.copy()),
-                NaturalModule(coef2.down.n, coef2.down.A.copy())
-            )
+                # Создаем копию коэффициента первого многочлена, чтобы не изменять исходный
+                coef1_copy = RationalModule(
+                    IntegerModule(coef1.up.b, coef1.up.n, coef1.up.A.copy()),
+                    NaturalModule(coef1.down.n, coef1.down.A.copy())
+                )
+                # Создаем копию коэффициента второго многочлена, чтобы не изменять исходный
+                coef2_copy = RationalModule(
+                    IntegerModule(coef2.up.b, coef2.up.n, coef2.up.A.copy()),
+                    NaturalModule(coef2.down.n, coef2.down.A.copy())
+                )
 
-            # Складываем коэффициенты
-            result_coef = coef1_copy.ADD_QQ_Q(coef2_copy)
-            new_C.append(result_coef)
+                # Складываем два коэффициента
+                result_coef = coef1_copy.ADD_QQ_Q(coef2_copy)
+                # Добавляем результат в список новых коэффициентов
+                new_C.append(result_coef)
 
-        return RealModule(max_degree, new_C)
+            # Возвращаем новый многочлен с полученными коэффициентами
+            return RealModule(max_degree, new_C)
 
     def SUB_PP_P(self, other):
         """
@@ -60,30 +67,37 @@ class RealModule:
            - Вычесть коэффициенты 
         3. Вернуть новый многочлен с полученными коэффициентами
         """
+        # Определяем максимальную степень из двух многочленов
         max_degree = max(self.DEG_P_N(), other.DEG_P_N())
+        # Создаем пустой список для новых коэффициентов
         new_C = []
 
+        # Проходим по всем степеням от 0 до максимальной
         for i in range(max_degree + 1):
-            # Получаем коэффициенты или нулевые если вышли за границы
+            # Получаем коэффициент первого многочлена для степени i, если он существует, иначе создаем нулевой коэффициент
             coef1 = self.C[i] if i < len(self.C) else RationalModule(
                 IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
+            # Получаем коэффициент второго многочлена для степени i, если он существует, иначе создаем нулевой коэффициент
             coef2 = other.C[i] if i < len(other.C) else RationalModule(
                 IntegerModule(0, 0, [0]), NaturalModule(0, [1]))
 
-            # Создаем копии коэффициентов
+            # Создаем копию коэффициента первого многочлена, чтобы не изменять исходный
             coef1_copy = RationalModule(
                 IntegerModule(coef1.up.b, coef1.up.n, coef1.up.A.copy()),
                 NaturalModule(coef1.down.n, coef1.down.A.copy())
             )
+            # Создаем копию коэффициента второго многочлена, чтобы не изменять исходный
             coef2_copy = RationalModule(
                 IntegerModule(coef2.up.b, coef2.up.n, coef2.up.A.copy()),
                 NaturalModule(coef2.down.n, coef2.down.A.copy())
             )
 
-            # Вычитаем коэффициенты
+            # Вычитаем второй коэффициент из первого
             result_coef = coef1_copy.SUB_QQ_Q(coef2_copy)
+            # Добавляем результат в список новых коэффициентов
             new_C.append(result_coef)
 
+        # Возвращаем новый многочлен с полученными коэффициентами
         return RealModule(max_degree, new_C)
 
     def MUL_PQ_P(self, q: RationalModule):
@@ -97,29 +111,34 @@ class RealModule:
         - Умножить коэффициент на заданное рациональное число 
         3. Вернуть новый многочлен с полученными коэффициентами
         """
-        # Если умножаем на ноль, возвращаем нулевой многочлен
+        # Проверяем, является ли числитель рационального числа нулем
         if q.up.POZ_Z_D() == 0:
+            # Если умножаем на ноль, возвращаем нулевой многочлен (степень 0, коэффициент 0)
             return RealModule(0, [RationalModule(IntegerModule(0, 0, [0]), NaturalModule(0, [1]))])
 
-        # СОЗДАЕМ КОПИЮ рационального числа, чтобы не изменять исходный
+        # Создаем копию рационального числа, чтобы не изменять исходный объект
         q_copy = RationalModule(
             IntegerModule(q.up.b, q.up.n, q.up.A.copy()),
             NaturalModule(q.down.n, q.down.A.copy())
         )
 
+        # Создаем пустой список для новых коэффициентов
         new_C = []
 
+        # Проходим по всем коэффициентам многочлена
         for coef in self.C:
-            # Создаем копию коэффициента
+            # Создаем копию текущего коэффициента, чтобы не изменять исходный
             coef_copy = RationalModule(
                 IntegerModule(coef.up.b, coef.up.n, coef.up.A.copy()),
                 NaturalModule(coef.down.n, coef.down.A.copy())
             )
 
-            # Умножаем на копию рационального числа
+            # Умножаем копию коэффициента на копию рационального числа
             result_coef = coef_copy.MUL_QQ_Q(q_copy)
+            # Добавляем результат в список новых коэффициентов
             new_C.append(result_coef)
 
+        # Возвращаем новый многочлен с той же степенью, но новыми коэффициентами
         return RealModule(self.m, new_C)
 
     def MUL_Pxk_P(self, k: int):
@@ -133,19 +152,24 @@ class RealModule:
         3. Добавить k нулевых коэффициентов в начало массива коэффициентов
         4. Вернуть новый многочлен с увеличенной степенью
         """
+        # Проверяем, что степень k неотрицательная
         if k < 0:
+            # Если k отрицательное, выбрасываем исключение
             raise ValueError("k must be non-negative")
 
+        # Если k = 0, возвращаем исходный многочлен без изменений
         if k == 0:
             return self
 
-        # Создаем k нулевых коэффициентов
+        # Создаем нулевой коэффициент (0/1)
         zero_coef = RationalModule(
             IntegerModule(0, 0, [0]),
             NaturalModule(0, [1])
         )
+        # Создаем новый список коэффициентов: k нулей + исходные коэффициенты
         new_C = [zero_coef] * k + self.C
 
+        # Возвращаем новый многочлен с увеличенной степенью
         return RealModule(self.m + k, new_C)
 
     def LED_P_Q(self):
@@ -157,11 +181,14 @@ class RealModule:
         1. Если массив коэффициентов пуст, вернуть нулевое рациональное число
         2. Иначе вернуть последний коэффициент массива (старший коэффициент)
         """
+        # Проверяем, пуст ли список коэффициентов
         if not self.C:
+            # Если массив пуст, возвращаем нулевое рациональное число
             return RationalModule(
                 IntegerModule(0, 0, [0]),
                 NaturalModule(0, [1])
             )
+        # Возвращаем последний элемент массива коэффициентов (старший коэффициент)
         return self.C[-1]
 
     def DEG_P_N(self):
@@ -169,6 +196,7 @@ class RealModule:
         Боков 4384
         Степень многочлена
         """
+        # Степень многочлена равна длине массива коэффициентов минус 1
         return len(self.C) - 1
 
     def FAC_P_Q(self):
@@ -182,46 +210,59 @@ class RealModule:
         3. Найти НОД всех числителей коэффициентов (взятых по модулю) 
         4. Вернуть рациональное число: НОД числителей / НОК знаменателей
         """
-        # Если многочлен нулевой, возвращаем 1/1
+        # Проверяем, все ли коэффициенты многочлена равны нулю
         if all(coef.up.A == [0] for coef in self.C):
+            # Создаем целое число 1
             one_int = IntegerModule(0, 0, [1])
+            # Создаем натуральное число 1
             one_natural = NaturalModule(0, [1])
+            # Возвращаем рациональное число 1/1
             return RationalModule(one_int, one_natural)
 
-        # Находим НОК всех знаменателей
+        # Инициализируем переменную для НОК знаменателей
         lcm_denom = None
+        # Проходим по всем коэффициентам многочлена
         for coef in self.C:
-            if coef.up.A != [0]:  # Пропускаем нулевые коэффициенты
+            # Пропускаем нулевые коэффициенты
+            if coef.up.A != [0]:
+                # Если это первый ненулевой коэффициент, инициализируем НОК его знаменателем
                 if lcm_denom is None:
                     lcm_denom = NaturalModule(coef.down.n, coef.down.A.copy())
                 else:
+                    # Иначе вычисляем НОК текущего знаменателя и накопленного НОК
                     current_denom = NaturalModule(coef.down.n, coef.down.A.copy())
                     lcm_denom = lcm_denom.LCM_NN_N(current_denom)
 
-        # Находим НОД всех числителей (взятых по модулю)
+        # Инициализируем переменную для НОД числителей
         gcd_num = None
+        # Проходим по всем коэффициентам многочлена
         for coef in self.C:
-            if coef.up.A != [0]:  # Пропускаем нулевые коэффициенты
-                # Получаем модуль числителя
-                abs_num = coef.up.ABS_Z_Z()  # Используем ABS_Z_Z для получения модуля
+            # Пропускаем нулевые коэффициенты
+            if coef.up.A != [0]:
+                # Получаем модуль числителя (абсолютное значение)
+                abs_num = coef.up.ABS_Z_Z()
 
+                # Если это первый ненулевой коэффициент, инициализируем НОД его числителем
                 if gcd_num is None:
                     gcd_num = NaturalModule(abs_num.n, abs_num.A.copy())
                 else:
+                    # Иначе вычисляем НОД текущего числителя и накопленного НОД
                     current_num = NaturalModule(abs_num.n, abs_num.A.copy())
                     gcd_num = gcd_num.GCF_NN_N(current_num)
 
-        # Если все коэффициенты нулевые
+        # Проверяем, были ли ненулевые коэффициенты
         if lcm_denom is None:
+            # Если все коэффициенты нулевые, возвращаем 1/1
             one_int = IntegerModule(0, 0, [1])
             one_natural = NaturalModule(0, [1])
             return RationalModule(one_int, one_natural)
 
-        # Преобразуем НОД числителей в целое число
+        # Создаем целое число для НОД числителей
         gcd_int = IntegerModule(0, 0, [0])
+        # Преобразуем натуральное число НОД в целое число
         gcd_int = gcd_int.TRANS_N_Z(gcd_num.n, gcd_num.A.copy())
 
-        # Создаем результирующее рациональное число: НОД_числителей / НОК_знаменателей
+        # Создаем и возвращаем рациональное число: НОД_числителей / НОК_знаменателей
         return RationalModule(gcd_int, lcm_denom)
 
     def MUL_PP_P(self, other):
